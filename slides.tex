@@ -61,32 +61,34 @@
 \section{Introduction \& motivational example}
 
 
-\begin{frame}{An example: the linear Model}
+\begin{frame}{Why Random Matrix theory needed?}
+  \begin{alertblock}{}
+    \textbf{Random matrices} are ubuquitous in machine learning theory.
+    \textbf{But} using them is not always straightforward.
+    \textbf{So} can we develop simple tools to analyze high-dimensional models involving random matrices?
+  \end{alertblock}
+  \emph{Example: linear-model}
   \begin{itemize}
-    \item \textbf{The data:} $X \in \mathbb R^{n \times d}$, $n$ samples, $d$ features, $X_{ij} \sim \mathcal N(0, \frac{1}{d})$
-    \item \textbf{The output:} $Y = X \beta^* + \xi$, noise vector $\xi \sim \mathcal N(0, \sigma^2 I_n)$
-    \item \textbf{The model:} estimate $\beta^*$ from $X$ and $Y$ (ridge regression)
+    \item \textbf{Data:} $X \in \mathbb R^{n \times d}$ with $X_{ij} \sim \mathcal N(0, \frac{1}{d})$ ($n$ samples, $d$ features), 
+    \item \textbf{Output:} $Y = X \beta^* + \xi$ with $\xi \sim \mathcal N(0, \sigma^2 I_n)$ and $ \frac{1}{d}\norm{\beta^*}^2 = r^2$
+    \item \textbf{Model:} $\hat \beta = (X^T X + \lambda I_d)^{-1} X^T Y$ (ridge regression)
   \end{itemize}
-  \begin{equation}
-    \hat \beta = (X^T X + \lambda I_d)^{-1} X^T Y
-  \end{equation}
 
   % Question
-  \begin{alertblock}{Question}
-    How to give a descriptive and predictive formula to analyze the performance of the ridge-regression estimator $\hat \beta$?
+  
+  \vspace{0.4cm}
+  \begin{alertblock}{Generalization error}
+    \emph{Averaging over new random data points ($x$ and $y=x\beta^* + \epsilon$)}
+  \begin{equation*}
+    \Egen(\hat \beta)  = \mathbb E_{\epsilon, x} \left[ ( x^T \beta^* + \epsilon - x^T \hat \beta )^2 \right] 
+    = \sigma^2 + \frac{1}{d} \norm{\beta^* - \hat \beta}^2
+  \end{equation*}
   \end{alertblock}
-  \vspace{-0.8cm}
-  \begin{align}
-    \Egen(\hat \beta) & = \mathbb E_{x \sim \mathcal N(0, \frac{1}{d}I_d)} \left[ ( x^T \beta^* + \epsilon - x^T \hat \beta )^2 \right]\\
-    & = \sigma^2 + (\beta^* - \hat \beta)^T \mathbb E_x \left[ x x^T \right] (\beta^* - \hat \beta)\\
-    & = \sigma^2 + \frac{1}{d} \norm{\beta^* - \hat \beta}^2
-  \end{align}
-  Can we say something about this norm? Can we derive an average result over the dataset $X$?
 
 \end{frame}
 
 \begin{frame}{The High-dimensional Limit}
-  Bias-variance decomposition:
+  Average $\mean_{X,Y} \Egen(\hat \beta)$ can be decomposed with Bias-variance:
 \begin{align}
   \frac{1}{d} \mean_{X,\xi} \norm{\beta^*-\hat \beta}^2 = \mathcal B_X(\hat \beta) +  \mathcal V_X(\hat \beta)
 \end{align}
@@ -96,12 +98,12 @@ with:
   \qquad \text{and} \qquad
   \mathcal V_X(\hat \beta) = \frac{1}{d}  \mean\left[  \norm{ \hat \beta - \mean[\hat \beta|X]}^2 \right]
 \end{equation*}
-\emph{... After calculating everything with $ \frac{1}{d}\norm{\beta^*}^2 = r^2$:}
+\emph{... After reducing everything with $ \frac{1}{d}\norm{\beta^*}^2 = r^2$:}
 \begin{align}\label{eq:simple-bias}
   \mathcal B_X(\hat \beta) 
-  & = \lambda^2 r^2 \mean_X \left[ \frac{1}{d} \trace{ (X^T X + \lambda I)^{-2} } \right]\\
+  & = \lambda^2 r^2 \mean_X \left\{ \frac{1}{d} \trace{ (X^T X + \lambda I)^{-2} } \right\}\\
   \mathcal V_X(\hat \beta)
-  & = \mean_X \sigma^2 \frac{1}{d} \trace{ (X^T X + \lambda I)^{-1} - \lambda (X^T X + \lambda I)^{-2} }
+  & = \sigma^2  \mean_X \left\{ \frac{1}{d} \trace{ (X^T X + \lambda I)^{-1}} - \lambda \frac{1}{d}\trace{(X^T X + \lambda I)^{-2}} \right\}
 \end{align}
 \begin{alertblock}{Conclusion}
   \begin{itemize}
@@ -150,9 +152,19 @@ with:
 \begin{frame}{Double-descent phenomenon}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      \vspace*{0.1cm}
+      %\vspace*{0.2cm}
+      Take again the algebraic equations:
+      \vspace*{-0.2cm}
+      $$
+      \begin{cases}
+        -\lambda g^2 + (1 - \lambda - \phi) g +1 = 0 \\
+        -\lambda (2gg' + g^2) + (1 - \lambda - \phi) g' + g = 0
+      \end{cases}
+      $$
 
-      In the limit $\lambda \to 0$:
+      %\vspace*{0.1cm}
+
+      Then in the limit $\lambda \to 0$:
       \begin{align*}
         \mathcal B_X(\hat \beta) & = \begin{cases} r^2 (1-\phi)  & \text{if } \phi < 1\\
         0 & \text{if } \phi > 1
@@ -161,14 +173,10 @@ with:
         \sigma^2 \frac{1}{\phi - 1} & \text{if } \phi > 1
         \end{cases}
       \end{align*}
-      \begin{itemize}
-        \item $\phi<1$: $\searrow$ bias,  $\nearrow$ variance
-        \item $\phi>1$: no bias, $\searrow$ variance
-        \item $\phi \simeq 1$: exploding variance!
-      \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
       % image marchenko-pastur.png with caption "\phi = 2"
+      \vspace*{0.2cm}
       \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{images/bias-variance.white.png}
@@ -191,6 +199,9 @@ with:
 
 
 \begin{frame}{More general models?}
+
+  \emph{Marchenko-Pastur works well in that case, but what about more complex models?}
+
   \textbf{Non-exhaustive list of interesting models:}
 
   \begin{enumerate}
@@ -202,9 +213,9 @@ with:
 
   \vspace*{0.3cm}
 
-  \begin{block}{How to analyze them?}
+  \begin{block}{Is there a practical tool to analyze them?}
     \begin{center}
-      \textbf{More Random matrix theory!}
+      \textbf{Linear-Pencils!}
     \end{center}
   \end{block}
 \end{frame}
