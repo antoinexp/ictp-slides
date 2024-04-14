@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  pdflatex:
+    image: texlive/texlive:latest-small
+    volumes:
+      - .:/data
+    working_dir: /data
+    command: >
+      bash -c "pdflatex slides.tex &&
+               bibtex slides.aux &&
+               pdflatex slides.tex &&
+               pdflatex slides.tex"
