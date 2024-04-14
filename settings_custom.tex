@@ -1,0 +1,165 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%		Thesis Settings
+%		Custom settings
+%
+%		2011
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %
+% %   Use this file for your own custom packages, command-definitions, etc...
+% %
+% % 
+% % Packages for references - cleverref must be last
+% \usepackage{nameref}
+% \usepackage{hyperref}
+% \usepackage{cleveref}
+% \usepackage[shortlabels]{enumitem}
+% % Reduce spacing in bibliography
+% \setlength{\bibsep}{0pt plus 0.3ex}
+% % Allow equations to break between pages
+% \allowdisplaybreaks
+% % Penalty for widow and orphan
+% \widowpenalty=9999
+% \clubpenalty=9999
+% %Penalty for relation and binary operation breaks in equations
+% \relpenalty=9999
+% \binoppenalty=9999
+
+
+\usepackage{amsmath,amssymb,amsfonts, amsthm}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{import}
+\usepackage{appendix}
+
+\usepackage{pgfplots}
+\usepackage[super]{nth}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+
+
+%\newtheorem{result}{Result}[section]
+%\newtheorem{lemma}{Lemma}[section]
+%\newtheorem{definition}{Definition}[section]
+
+\newcommand{\opL}{\mathcal L}
+\newcommand{\opR}{\mathcal R}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\mean}[1]{\mathbb E#1}
+\newcommand{\fmean}[1]{\langle #1 \rangle}
+\newcommand{\cov}{\text{Cov}}
+\newcommand{\var}{\text{Var}}
+\newcommand{\trOp}[1]{(J \otimes \text{Tr}) \left[#1\right]}
+\newcommand{\trace}[1]{\text{Tr}\left[#1\right]}
+\newcommand{\Sp}{\text{Sp}}
+\newcommand{\e}{\text {e}}
+\newcommand{\dd}[1]{\mathrm{d}#1}
+\newcommand{\traceLim}[2][.]{ \text{Tr}_{#1}\left[#2\right] }
+\newcommand{\traceLimOp}[2][.]{ (J \otimes \text{Tr}_{#1})\left[#2\right] }
+
+% Definitions of handy macros can go here
+
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
+
+
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{mathtools,amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[super]{nth}
+\usepackage{dsfont}
+\usepackage{pgfplots}
+\usepackage{adjustbox}
+%\usepackage{enumitem,kantlipsum}
+
+\usepackage{etoolbox}
+
+\AtBeginEnvironment{subappendices}{%
+\chapter*{Appendix}
+\addcontentsline{toc}{chapter}{Appendices}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\tikzset{%
+  every neuron/.style={
+    circle,
+    draw,
+    minimum size=1cm
+  },
+  neuron missing/.style={
+    draw=none, 
+    scale=2,
+    text height=0.333cm,
+    execute at begin node=\color{black}$\vdots$
+  },
+}
+
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\Real}{\mathbb R}
+\newcommand{\Complex}{\mathbb C}
+\newcommand{\Integer}{\mathbb N}
+\newcommand{\Normal}{\mathcal N}
+\newcommand{\Matrix}{\mathcal M}
+
+
+\newcommand{\MSEtrain}{\mathcal E_{\text{train}}}
+\newcommand{\MSEtest}{ \mathcal E_{\text{gen}}}
+
+\newcommand{\Etrain}[1][\lambda]{\mathcal E_{\text{train}}^#1}
+\newcommand{\Egen}{\mathcal E_{\text{gen}}}
+
+\newcommand{\barMSEtrain}{\bar{\mathcal E}_{\text{train}}}
+\newcommand{\barMSEtest}{\bar{\mathcal E}_{\text{gen}}}
+
+
+\newcommand{\activation}{\sigma}
+
+\newcommand{\Zlin}{Z_{\text{lin}}}
+
+\DeclareMathOperator\erf{erf}
+
+\newcommand{\CORRECT}[2]{ \textcolor{red}{\st{#1}}\textcolor{blue}{#2} }
+
+\newcommand{\simplenorm}[1]{\lVert#1\rVert}
+\newcommand{\resolvent}[1]{\mathcal G^{#1}}
+
+
+
+% Colors for the hyperref package
+\definecolor{urlcolor}{rgb}{0,.145,.698}
+\definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+\definecolor{citecolor}{rgb}{.12,.54,.11}
+
+% Setup hyperref package
+\hypersetup{
+  breaklinks=true,  % so long urls are correctly broken across lines
+  colorlinks=true,
+  urlcolor=urlcolor,
+  linkcolor=linkcolor,
+  citecolor=citecolor,
+}
+% Slightly bigger margins than the latex defaults
+
+
+\usepackage{fancyvrb}
+\DefineVerbatimEnvironment{Verbatim}{Verbatim}{fontsize=\footnotesize}
+
