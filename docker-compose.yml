@@ -2,7 +2,7 @@ version: '3'
 
 services:
   pdflatex:
-    image: texlive/texlive:latest-small
+    image: texlive/texlive:latest
     volumes:
       - .:/data
     working_dir: /data
