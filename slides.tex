@@ -222,6 +222,69 @@ with:
 
 \section{Random matrix theory}
 
+\begin{frame}{Level 1: Linear Pencil, the basics}
+
+  Let $S$ be a symmetric random matrix ($S_{ij} \sim \mathcal N(0, \frac{1}{d})$) and define Stieltjes transform of the spectral density $\rho$ of $S$:
+  $$ g(z) = \int \frac{\rho(\lambda) \dd \lambda}{\lambda - z} = \traceLim[d]{ (S - zI)^{-1}}$$
+
+  \begin{block}{Main result \cite{wigner1958distribution}}
+    \begin{equation}\label{eq:trivial-linear-pencil}
+        g = (z-g)^{-1}
+    \end{equation}
+  \end{block}
+
+  \textbf{Note 1:} above eqn. often represented under the form:
+  $$g^2 - zg + 1 = 0$$
+
+  \textbf{Note 2:} 
+  $L=(S-zI)$ \emph{is} a "trivial" linear-pencil of size $1 \times 1$! 
+  Equation \eqref{eq:trivial-linear-pencil} will follow us in the next slides.
+
+\end{frame}
+
+
+\begin{frame}{Level 2: the linearization method}
+  Back to Marchenko-Pastur: $L = (X^TX - zI)$ is not a linear-pencil, because it is not "linear" in $X$.
+  
+  \textbf{But} we can linearize it with a block-matrix!
+
+  Consider $U_1 = (X^TX - zI)^{-1}$ with:
+  \begin{align*}
+    (X^TX - zI) U_1 & = I\\
+    U_2 & = X U_1\\
+  \end{align*}
+
+  Then:
+  \begin{equation*}
+    \underbrace{
+    \begin{pmatrix}
+      -zI & X^T\\
+      X & -I
+    \end{pmatrix}
+    }_{L}
+    \begin{pmatrix}
+      U_1\\
+      U_2
+    \end{pmatrix}
+    = \begin{pmatrix}
+      I\\
+      0
+    \end{pmatrix}
+  \end{equation*}
+  Then:
+  \begin{equation*}
+    U_1 = \begin{pmatrix}
+      I & 0
+    \end{pmatrix}
+    (L^{-1})
+    \begin{pmatrix}
+      I\\
+      0
+    \end{pmatrix}
+    = (L^{-1})^{(11)}
+  \end{equation*}
+\end{frame}
+
 \begin{frame}{Linear Pencil: the basics}
   \begin{columns}[T]
     \begin{column}{0.45\textwidth}
