@@ -250,11 +250,14 @@ with:
 
   Consider $U_1 = (X^TX - zI)^{-1}$ with:
   \begin{align*}
-    (X^TX - zI) U_1 & = I\\
-    U_2 & = X U_1\\
+    \begin{cases}
+      (X^TX - zI) U_1 & = I\\
+      U_2 & = X U_1\\
+    \end{cases}
   \end{align*}
+  \vspace*{-0.1cm}
+  Then we obtain our linear-pencil $L$:
 
-  Then:
   \begin{equation*}
     \underbrace{
     \begin{pmatrix}
@@ -271,7 +274,7 @@ with:
       0
     \end{pmatrix}
   \end{equation*}
-  Then:
+  And in particular, $\traceLim[d]{U_1}$ is given by the partial trace of $L^{-1}$ because:
   \begin{equation*}
     U_1 = \begin{pmatrix}
       I & 0
