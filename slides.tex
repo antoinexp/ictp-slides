@@ -294,8 +294,8 @@ with:
   \textbf{Step 1:} Encode matrix into a wider block-matrix (variance $\frac{1}{d}$):
   \begin{equation*}
     L = \begin{pmatrix}
-      -z I_n & X\\
-      X^T & -C^{-1}
+      -z I_d & X^T\\
+      X & - I_n
     \end{pmatrix}
   \end{equation*}
 \end{column}
@@ -304,8 +304,8 @@ with:
   \textbf{Step 2:} Extract deterministic blocks from random matrices:
   \begin{equation*}
     L_0 = \begin{pmatrix}
-      -z I_n& 0\\
-      0 & -C^{-1}
+      -z I_d& 0\\
+      0 & -I_n
     \end{pmatrix}
   \end{equation*}
   \end{column}
@@ -338,11 +338,14 @@ with:
   \end{block}
 \end{frame}
 
-\begin{frame}{Linear Pencil: the basics}
+
+
+
+\begin{frame}{Linear Pencil, example 1: Marchenko-Pastur}
   \begin{itemize}
     \item From \textbf{step 4} we have defined:
     \begin{equation}
-      g_{11} = \traceLim[d]{ (XCX^T - zI_d)^{-1}}
+      g_{11} = \traceLim[d]{ (X^TX - zI_n)^{-1}}
     \end{equation}
     \item From application of \textbf{Main result} we find:
     \begin{equation*}
@@ -352,32 +355,55 @@ with:
       \end{pmatrix}
       = \traceLimOp[d]{
         \begin{pmatrix}
-          -zI_n - g_{22} I_n & 0\\
-          0 & -C^{-1} - g_{11} I_d
+          -zI_d - g_{22} I_d & 0\\
+          0 & -I_n - g_{11} I_n
         \end{pmatrix}^{-1}
       }
       \end{equation*}
   \end{itemize}
 
-
-
   \begin{alertblock}{Conclusion}
     With $g_C(z) = \traceLim[d]{ (C - zI_d)^{-1}}$:
     \begin{equation*}
       \begin{cases}
-        g_{11} = \traceLim[d]{ (-zI_n - g_{22}I_n)^{-1} } = -\phi (z + g_{22})^{-1}\\
-        g_{22} = \traceLim[d]{ (-C^{-1} - g_{11}I_d)^{-1} }
-        = - g_{11}^{-1} \left( 
-          1+ g_{11}^{-1} g_C(g_{11}^{-1})
-          \right) 
+        g_{11} = \traceLim[d]{ (-zI_n - g_{22}I_n)^{-1} } = - (z + g_{22})^{-1}\\
+        g_{22} = \traceLim[d]{ (-I_n - g_{11}I_n)^{-1} }
+        = - \phi \left( 
+          1 + g_{11} 
+          \right)^{-1}
       \end{cases}
     \end{equation*}
   \end{alertblock}
 
+  $$
+    g_{11} = -\frac{1}{z - \phi (1+g_{11})^{-1}}
+    \implies
+    z g_{11}^2 + (1+z-\phi) g_{11} +1 = 0
+  $$
+
 \end{frame}
 
 
-\begin{frame}{Gaussian Equivalence Principle}
+
+\begin{frame}{Linear-pencil, example 2: Sample covariance Matrix}
+  Linear-pencil works for more general matrices: for instance, the sample covariance matrix.
+
+  Quite often, real-world problems come from samples $u \sim \mathcal N(0, C)$,
+  or $u = C^{\frac12}x$ with $x \sim \mathcal N(0, I_d)$.
+
+  Given $n$ samples $U=(u_1, \ldots, u_n)$ an estimation of $C$ is given by:
+  $$ \tilde C = \frac{1}{d} UU^T = C^{\frac12} X X^T C^{\frac12}$$ with $X$ the same random matrix as before.
+
+  Linear-pencils allow the study of the Stieltjes transform of $\tilde C$:
+  $$
+  g(z) =  \traceLim[d]{(C^{\frac12} X X^T C^{\frac12} - zI_d)^{-1} }
+  $$
+\end{frame}
+
+
+
+
+\begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
   How to calculate $g(z) = \traceLim[d]{(\sigma(WX) \sigma(WX)^T - zI_d)^{-1}}$?
   \begin{block}{GEP \cite{pennington2017nonlinear}}
     \begin{equation}
@@ -413,6 +439,40 @@ with:
     \end{pmatrix}
   \end{equation*}
   \textbf{Note:} no unique encoding! In fact, possible with a $4\times 4$ linear-pencil
+\end{frame}
+
+
+\begin{frame}{GEP: Construction of $4\times 4$ linear pencil}
+  Consider $\traceLim[d]{(\sigma(XW) \sigma(XW)^{T} - zI)^{-1}} = \traceLim[d]{U_0}$:
+  \begin{align*}
+    ((\mu W X + \nu \Omega) (\mu X^T W^T + \nu \Omega^T) - z I) U_0 & = I\\
+    U_1 & = \mu W^T U_0 \\
+    U_2 & = X^T U_1 + \nu \Omega^T U_0\\
+    U_3 & = X U_2
+  \end{align*}
+  So first equation is: $ \mu W U_3 + \nu \Omega U_2 - z U_0 = I$, so:
+  \begin{align*}
+    \begin{pmatrix}
+      -z I & 0 & \nu \Omega & \mu W\\
+      0 & 0 & X & -I\\
+      \nu \Omega^T & X^T & -I & 0\\
+      \mu W^T & -I & 0 & 0
+    \end{pmatrix}
+    \begin{pmatrix}
+      U_0\\
+      U_1\\
+      U_2\\
+      U_3
+    \end{pmatrix}
+    = 
+    \begin{pmatrix}
+      I\\
+      0\\
+      0\\
+      0
+    \end{pmatrix}
+  \end{align*}
+
 \end{frame}
 
 \section{The dynamics of general linear models}
@@ -612,164 +672,7 @@ with:
 \section{Beyond the linear setting}
 
 
-\begin{frame}{Spiked Wigner Model}
-  \begin{itemize}
-    \item \textbf{The data:} $ Y = \theta^* \theta^{*T} + \sqrt{\frac{n}{\lambda}} \xi$ with $\xi_{ij} \sim \mathcal N(0, 1)$ and $\norm{\theta^*}^2 = n$.
-    \item \textbf{The objective:} Minimizing $\mathcal H(\theta) = \norm{Y-\theta \theta^T}_F^2$.
-  \end{itemize}
-  \emph{Equivalently: maximizing $\theta^T Y \theta$ subject to $\norm{\theta}^2 = n$, ie. top eigenvector}
-  \begin{figure}[H]
-      \centering
-      \subfloat{
-          \includegraphics[width=0.5\textwidth]{images/eigenvalue-outlier.white.png}
-      }
-      \subfloat{
-          \includegraphics[width=0.5\textwidth]{images/bbp-transition2.white.png}
-      }
-      \caption{Histogram of the eigenvalues of $Y$ (left) and the theoretical transition of the overlap in the high-dimensional limit (right).}
-  \end{figure}
-  
-  \vspace*{-0.25cm}
-  \textbf{Metric:} overlap $q(\theta)$ with: $\frac{1}{n} \norm{\theta^* - \theta}_F^2 = 2(1 - \theta^T \theta^* ) = 2 (1 - q(\theta))$
 
-\end{frame}
-
-\begin{frame}{Main result: gradient-flow evolution}
-  Random initialization $\theta_0\in \mathbb{S}^{n-1}(\sqrt  n)$ and gradient flow method
-  \begin{equation*}
-    \frac{\dd \theta_t}{\dd t} = - \nabla \mathcal H(\theta_t)
-    + \frac{1}{n} \left( \theta_t^T \nabla \mathcal H(\theta_t)  \right) \theta_t  
-  \end{equation*}
-
-  \begin{block}{Theorem \cite{pmlr-v134-bodin21a}}
-      With $q(0) = \frac{1}{n} \langle\theta^*, \theta_{0}\rangle = \alpha$ for a fixed $\alpha \in [-1, +1]$:
-      \begin{equation*}
-      q(\tau) \overset{\mathbb{P}}{ \underset{n \to\infty}{\longrightarrow}} \bar q(\tau) = \frac{\hat q(\tau)}{\sqrt{\hat p(\tau)}}
-      \end{equation*}
-      where\footnote{$M_\lambda(\tau) = \frac{\sqrt\lambda}{\tau} I_1(\frac{2\tau}{\sqrt{\lambda}})$ scaled moment generating function of semicircle law} 
-
-  \vspace*{-0.25cm}
-  \resizebox{\textwidth}{!}{
-    \begin{minipage}{1.3\textwidth}
-      \begin{align*}
-      \hat q(\tau) & = 
-      \alpha e^{(1+\frac{1}{\lambda}) \tau} 
-      \left\{ 1 - \frac{1}{\lambda} \int_0^\tau ds\, e^{-(1+\frac{1}{\lambda}) s} M_\lambda(s) \right\} \\
-      \hat p(\tau) & = M_\lambda(2\tau) + 2 \alpha \int_0^\tau ds\, \hat q(s) M_\lambda(2\tau-s)
-              + \int_0^\tau\int_0^\tau dudv\, \hat q(u) \hat q(v) M_\lambda(2\tau-u-v).
-      \end{align*}
-      \end{minipage}
-  }
-  \end{block}
-  \vspace*{0.5cm}
-\end{frame}
-
-
-\begin{frame}{Integro-differential equations}
-  Let's define \emph{state evolution functions} with resolvent $\mathcal R(z) = (\frac{\xi}{\sqrt n} - z I)^{-1}$
-  $$Q_t(z) = \frac{1}{n} \langle \theta^*, \mathcal R(z) \theta_t \rangle, ~~~~ 
-  P_t(z) = \frac{1}{n} \langle \theta_t, \mathcal R(z) \theta_t \rangle, ~~~~ 
-  R(z) = \frac{1}{n} \langle \theta^*, \mathcal R(z) \theta^* \rangle$$
-  $\Rightarrow$ Closed set of integro-differential-equations:
-  \begin{align*}
-      \begin{cases}
-          \frac{\dd}{\dd t}Q_t(z) = q(t) R(z) 
-                                     + \frac{1}{\sqrt \lambda} (z Q_t(z) + q(t))
-                                      - \left(q^2(t) + \frac{1}{\sqrt \lambda} p_1(t) \right) Q_t(z) 
-          \\
-          \frac12 \frac{\dd}{\dd t} P_t(z) = q(t) Q_t(z) 
-                                              + \frac{1}{\sqrt \lambda} (z P_t(z) + 1)
-                                               - \left(q^2(t) + \frac{1}{\sqrt \lambda} p_1(t) \right) P_t(z)
-      \end{cases}
-  \end{align*}
-
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      with:
-      \begin{equation*}
-        \begin{cases}
-          q(t) = \oint_{\mathcal C} \frac{-\dd z}{2i \pi} Q_t(z)\\
-          p_1(t) = \oint_{\mathcal C} \frac{-\dd z}{2i \pi} z P_t(z) = \frac{1}{n} \theta_t^T \frac{\xi}{\sqrt n} \theta_t     
-        \end{cases}
-      \end{equation*}
-    
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{figure}
-        \centering
-          \includegraphics[width=0.8\textwidth]{images/run_1.png}
-        \caption{$\lambda = 10, \alpha = 0.1, n=70$}
-    \end{figure}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-
-\begin{frame}{Integro-differential equations}
-  \begin{enumerate}
-      \item Simplify the system using a \emph{change of variable} such as:
-      \begin{equation}
-          \hat Q_t(z) = e^{\int_0^t q^2(s) + \frac{1}{\sqrt \lambda} p_1(s) \dd s} Q_t(z)
-      \end{equation}
-      \item \emph{Laplace transform} introduces the initial conditions $Q_0(z), P_0(z)$
-      \item Convergence in probability (and uniformly in $z$ on a fixed contour) of the initial conditions towards the Stieltjes transform of the semicircle law $G_{\rm sc}(z) = \frac12(-z + \sqrt{z^2 - 4})$ for any deterministic $\theta_0, \theta^*$ such that $\alpha = q(0)$ for a fixed $\alpha > 0$ :
-      \begin{equation}
-          (Q_0(z), P_0(z), R(z)) \to (\alpha G_{\rm sc}(z), G_{\rm sc}(z), G_{\rm sc}(z))
-      \end{equation}
-      \item \emph{Cauchy Integration} to isolate the terms $\mathcal L \hat q(t), \mathcal L \hat p(t)$ 
-      \item \emph{Inverse laplace transform} of the former terms and calculation of the ideal solution of the system with the limiting initial conditions
-      \item Grönwall-type arguments to show the concentration towards the calculated ideal-solution
-  \end{enumerate}
-\end{frame}
-
-
-
-\begin{frame}{First order asymptotics}
-  \begin{block}{Result $\tau \to +\infty$:}
-    \resizebox{\textwidth}{!}{
-      \begin{minipage}{1.3\textwidth}
-    \begin{itemize}
-      \item For $1 < \lambda < +\infty$:
-      \vspace{-0.2cm}
-      \begin{equation*}
-          \bar q(\tau) - \text{sign}(\alpha) \sqrt{1-\frac{1}{\lambda}}
-          \sim\frac{  \text{sign}(\alpha)  
-              }{2 \sqrt{\pi} \lambda^\frac14 \sqrt{1-\frac{1}{\lambda}}  \left(1 - \frac{1}{\sqrt{\lambda}}\right)^2}  
-              \tau^{-\frac32}  e^{ -(1-\frac{1}{\sqrt \lambda})^2 \tau } 
-      \end{equation*}
-      \item For $0 < \lambda < 1$:
-      \vspace{-0.2cm}
-      \begin{equation*}
-        \bar q(\tau)
-        \sim  
-        \frac{ \alpha \left( \frac{2}{\pi} \right)^\frac14  }{
-            \lambda^\frac58 
-            \left(1 - \frac{1}{\sqrt{\lambda}}\right)^2
-            \sqrt{
-            1 - \alpha^2 + \frac{\alpha^2}{\lambda (\frac{1}{\sqrt \lambda} - 1)^2 }
-        }} \tau^{- \frac34}
-      \end{equation*}
-    \end{itemize}
-    \vspace{-0.2cm}
-    \end{minipage}
-    }
-  \end{block}
-  \begin{figure}
-    \centering
-    \begin{subfigure}{0.48\linewidth}
-        \includegraphics[width=\textwidth]{./images/experiment_2.png} 
-        \caption{$\alpha = 0.1$}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\linewidth}
-        \includegraphics[width=\textwidth]{./images/experiment_3.png}
-        \caption{$\alpha = 0.5$}
-    \end{subfigure}
-    \caption{Overlap as a function of time according to theorem \ref{th:risktrack} for two initial conditions and different 
-    signal-to-noise ratios. Thick dotted line corresponds to $\lambda =1$ and tends to zero slowly as $(2/\pi\tau)^{1/4}$. For $\lambda <1$ the curves tend to zero and for $\lambda >1$ they tend to $\sqrt{1 - 1/\lambda}$. }
-    \label{fig:theoretical_curves}
-\end{figure}
-\end{frame}
 
 
 \begin{frame}{Quick overview: Extensive case}
@@ -826,104 +729,11 @@ with:
 
 \section{Conclusion}
 
-\begin{frame}{Learning the first layer}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-        \begin{block}{}
-          \textbf{Gradient-flow} \cite{NEURIPS2022_f7e7fabd}
-          \begin{equation*}
-            \frac{\dd W_t}{\dd t} = X^T \left[ (
-                Y - \hat Y
-              ) \beta_t^T  \odot \sigma'(XW_t)
-            \right]
-          \end{equation*}
-
-          Rank-one update emerge with one-gradient step and specific scalings of $\beta_0$
-        \end{block}
-
-        \begin{block}{}
-          \textbf{Mean-field view} \cite{mei2018mean}
-          centered isotropic gaussian model:
-          \begin{equation*}
-            \partial_t \rho(r,t) =
-            2\xi(t) \partial_r ( \rho(r,t) \partial_r \psi(r, \rho))
-          \end{equation*}
-
-          (with $r=\norm{w}_2$)
-        \end{block}
-    \end{column}
-    \begin{column}{0.54\textwidth}
-      \begin{block}{}
-        \textbf{Low-rank adaptation} \cite{hu2021lora}\\
-        Train only a low-rank matrix
-        \vspace*{-0.3cm}
-        \begin{figure}
-          \centering
-          \includegraphics[width=0.8\textwidth]{images/lora.white.png}
-          \vspace*{-0.3cm}
-          \caption{LoRA (Extracted from above reference)}
-        \end{figure}
-      \end{block}
-    \end{column}
-  \end{columns}
-
-\end{frame}
-
-\begin{frame}{Empirical scaling laws}
-  \cite{kaplan2020scaling} \emph{(OpenAI)} used for GPT3, further challenged in secondary paper \cite{hoffmann2022training} \emph{(Deepmind)}, but common observation:
-
-  \begin{center}
-    \emph{"the training curves follow predictable power-laws [...]"}
-  \end{center}  
-
-  \textbf{Example:} loss $L$, computational resources $C$,  model size $N$, available data $D$:
-  \begin{align*}
-    L & = A N^{-\alpha} + B D^{-\beta} + L_0\\
-    C & = C_0 N D
-  \end{align*}
-  
-  \begin{alertblock}{Final Question:}
-    Can we derive scaling laws from first principle?
-  \end{alertblock}
-\end{frame}
-
 
 \begin{frame}[standout]
   Questions?
 \end{frame}
 
-\begin{frame}{Appendix: Construction of $4\times 4$ linear pencil}
-  Consider $\traceLim[d]{(\sigma(XW) \sigma(XW)^{T} - zI)^{-1}} = \traceLim[d]{U_0}$:
-  \begin{align*}
-    ((\mu W X + \nu \Omega) (\mu X^T W^T + \nu \Omega^T) - z I) U_0 & = I\\
-    U_1 & = \mu W^T U_0 \\
-    U_2 & = X^T U_1 + \nu \Omega^T U_0\\
-    U_3 & = X U_2
-  \end{align*}
-  So first equation is: $ \mu W U_3 + \nu \Omega U_2 - z U_0 = I$, so:
-  \begin{align*}
-    \begin{pmatrix}
-      -z I & 0 & \nu \Omega & \mu W\\
-      0 & 0 & X & -I\\
-      \nu \Omega^T & X^T & -I & 0\\
-      \mu W^T & -I & 0 & 0
-    \end{pmatrix}
-    \begin{pmatrix}
-      U_0\\
-      U_1\\
-      U_2\\
-      U_3
-    \end{pmatrix}
-    = 
-    \begin{pmatrix}
-      I\\
-      0\\
-      0\\
-      0
-    \end{pmatrix}
-  \end{align*}
-
-\end{frame}
 
 
 \begin{frame}{Appendix: Gaussian Equivalence Principle}
@@ -958,46 +768,6 @@ with:
 
 
 
-\begin{frame}{From statistical physics to machine learning}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-        \begin{center}
-          Study of large systems of \\
-          \emph{interacting particles}\\
-            or\\
-          \emph{interacting parameters}
-        \end{center}
-    
-      \begin{block}{Common points}
-        \begin{itemize}
-          \item \textbf{Randomness:} initialization, noise, data
-          \item \textbf{High-dimensional limit}
-          \item \textbf{Phase transitions:} sharp changes in the behavior of the system
-          \item \textbf{Methods:} replica method, RMT, cavity method
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \textbf{Ex.:} Hopfield Network \cite{hopfield1982neural}
-      \begin{center}
-        \begin{tikzpicture}[scale=1.5]
-          \foreach \i in {1,...,5} {
-              \node[draw,circle] (N\i) at ({360/5*(\i-1)+360/20}:1) {$N_{\i}$};
-          }
-          \foreach \i in {1,...,5} {
-              \foreach \j in {\i,...,5} {
-                  \draw (N\i) -- (N\j);
-              }
-          }
-          \end{tikzpicture}
-      \end{center}
-      \begin{equation*}
-        E = -\frac12\sum_{i,j} w_{ij} S_i S_j -\sum_i \theta_i S_i
-      \end{equation*}
-    \end{column}
-  \end{columns}
-
-\end{frame}
 
 \appendix
 
