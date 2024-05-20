@@ -346,16 +346,16 @@ with:
     [\eta_L(g)]_{il} = \sum_{jk \in \mathbb S} \sigma_{ij}^{kl} g_{jk}
   \end{equation*}
 
-  \begin{block}{Main result \cite{spectra,mingo2017free}}
-    \begin{equation}\label{eq:main-result-linear-pencil}
-        g = \traceLimOp[d]{
-            (L_0 - (\eta_L \otimes I)(g))^{-1}
-        }
-    \end{equation}
-  \end{block}
+  Here, $g_{11}$ is clearly the quantity of interest, and:
+  \begin{equation*}
+    \eta_L(g) = \begin{pmatrix}
+      \sigma_{12}^{21} g_{22} & 0\\
+      0 & \sigma_{21}^{12} g_{11}
+    \end{pmatrix}
+  \end{equation*}
 \end{frame}
 
-\begin{frame}{Linear Pencil: main result}
+\begin{frame}{Linear Pencil: Main result}
   \begin{block}{Main result \cite{spectra,mingo2017free}}
     \begin{equation}\label{eq:main-result-linear-pencil}
         g = \traceLimOp[d]{
@@ -364,21 +364,29 @@ with:
     \end{equation}
   \end{block}
 \begin{enumerate}
-  \item   $J \odot \traceLim[d]{\cdot}$ is the partial trace operator:
-  \begin{equation*}
-    \left[\traceLimOp[d]{G}\right]_{ij} = 
-    \begin{cases}
-      \traceLim[d]{G^{(ij)}} & \text{if } N_i=N_j\\
-      0 & \text{otherwise}
-    \end{cases}
-  \end{equation*}
-
   \item $(\eta_L \otimes I)(\cdot)$ is the matrix operator acting on $g$:
   \begin{equation*}
     ((\eta_L \otimes I)(g))^{(ij)} = 
     \begin{cases}
       [\eta_L(g)]_{ij} I_{N_i} & \text{if } N_i=N_j\\
       0_{N_i,N_j} & \text{otherwise}
+    \end{cases}
+  \end{equation*}
+  \emph{So in our example:}
+  \begin{equation*}
+    L_0 - (\eta_L \otimes I)(g) =
+    \begin{pmatrix}
+      -zI_d - [\eta_L(g)]_{11} I_d & 0\\
+      0 & -I_n -  [\eta_L(g)]_{22} I_n
+    \end{pmatrix}
+  \end{equation*}
+
+  \item   $J \odot \traceLim[d]{\cdot}$ is the partial trace operator:
+  \begin{equation*}
+    \left[\traceLimOp[d]{G}\right]_{ij} = 
+    \begin{cases}
+      \traceLim[d]{G^{(ij)}} & \text{if } N_i=N_j\\
+      0 & \text{otherwise}
     \end{cases}
   \end{equation*}
   \end{enumerate}
