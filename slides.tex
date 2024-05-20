@@ -523,17 +523,17 @@ with:
 \end{frame}
 
 
-\begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
-  Consider a 1-Layer neural network with frozen random weight matrix $W$:
-  \begin{equation*}
-    \hat Y = \sigma(WX) \hat \beta
-  \end{equation*}
-  The ridge-regression estimator gives again:
-  $$ \hat \beta = \sigma(WX)^T (\sigma(WX) \sigma(WX)^T + \lambda I) Y$$
-  As for the toy model of the beginning: we are left to calculate the high-dimensional
-  eigenvalue distribution of $M=\sigma(WX) \sigma(WX)^T$, or similarly its Stieltjes transform:
-  $$g(z) = \traceLim[d]{(\sigma(WX) \sigma(WX)^T - zI_d)^{-1}}$$
-\end{frame}
+%\begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
+%  Consider a 1-Layer neural network with frozen random weight matrix $W$:
+%  \begin{equation*}
+%    \hat Y = \sigma(WX) \hat \beta
+%  \end{equation*}
+%  The ridge-regression estimator gives again:
+%  $$ \hat \beta = \sigma(WX)^T (\sigma(WX) \sigma(WX)^T + \lambda I) Y$$
+%  As for the toy model of the beginning: we are left to calculate the high-dimensional
+%  eigenvalue distribution of $M=\sigma(WX) \sigma(WX)^T$, or similarly its Stieltjes transform:
+%  $$g(z) = \traceLim[d]{(\sigma(WX) \sigma(WX)^T - zI_d)^{-1}}$$
+%\end{frame}
 
 
 \begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
@@ -554,7 +554,7 @@ with:
       \mu^2 + \nu^2 = \langle \sigma, \sigma \rangle
     $
   \end{block}
-  Ex.: $U = (\mu W, \nu \Omega), V^* = (X^T, I)$ so $g(z) = \traceLim[d]{(U V^T V U^T - zI_d)^{-1}}$
+  Ex.: $U = (\mu W, \nu \Omega), V = (X^T, I)$ so $g(z) = \traceLim[d]{(U V^T V U^T - zI_d)^{-1}}$
   \begin{equation*}
     L = \begin{pmatrix}
       -z I & 0 & 0 & U\\
