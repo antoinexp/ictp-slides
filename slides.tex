@@ -220,7 +220,7 @@ with:
   \end{block}
 \end{frame}
 
-\section{Random matrix theory}
+\section{Linear-Pencil Method}
 
 \begin{frame}{Level 1: Linear Pencil, the basics}
 
@@ -243,7 +243,24 @@ with:
 \end{frame}
 
 
-\begin{frame}{Level 2: the linearization method}
+\begin{frame}{Linear-Pencil: 3 examples}
+  Illustration of the method with 3 examples:
+  \begin{enumerate}
+    \item Marchenko-Pastur:
+    $$ g(z) = \traceLim[d]{(X^TX-zI_d)^{-1}}$$
+    \item Sample Covariance Matrix:
+    $$ g(z) = \traceLim[d]{(C^\frac12 X^TX C^\frac12 -zI_d)^{-1}}$$
+    \item Random Feature Kernel:
+    $$ g(z) = \traceLim[d]{(\sigma(W X) \sigma(W X)^T-zI)^{-1}}$$
+  \end{enumerate}
+
+  \begin{block}{}
+    Each case involves algebraic operations on a matrix level.
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{The linearization method}
   Back to Marchenko-Pastur: $L = (X^TX - zI)$ is not a linear-pencil, because it is not "linear" in $X$.
   
   \textbf{But} we can linearize it with a block-matrix!
@@ -288,7 +305,7 @@ with:
   \end{equation*}
 \end{frame}
 
-\begin{frame}{Linear Pencil: the basics}
+\begin{frame}{Linear Pencil: main result}
   \begin{columns}[T]
     \begin{column}{0.45\textwidth}
   \textbf{Step 1:} Encode matrix into a wider block-matrix (variance $\frac{1}{d}$):
@@ -338,14 +355,42 @@ with:
   \end{block}
 \end{frame}
 
+\begin{frame}{Linear Pencil: main result}
+  \begin{block}{Main result \cite{spectra,mingo2017free}}
+    \begin{equation}\label{eq:main-result-linear-pencil}
+        g = \traceLimOp[d]{
+            (L_0 - (\eta_L \otimes I)(g))^{-1}
+        }
+    \end{equation}
+  \end{block}
+\begin{enumerate}
+  \item   $J \odot \traceLim[d]{\cdot}$ is the partial trace operator:
+  \begin{equation*}
+    \left[\traceLimOp[d]{G}\right]_{ij} = 
+    \begin{cases}
+      \traceLim[d]{G^{(ij)}} & \text{if } N_i=N_j\\
+      0 & \text{otherwise}
+    \end{cases}
+  \end{equation*}
 
+  \item $(\eta_L \otimes I)(\cdot)$ is the matrix operator acting on $g$:
+  \begin{equation*}
+    ((\eta_L \otimes I)(g))^{(ij)} = 
+    \begin{cases}
+      [\eta_L(g)]_{ij} I_{N_i} & \text{if } N_i=N_j\\
+      0_{N_i,N_j} & \text{otherwise}
+    \end{cases}
+  \end{equation*}
+  \end{enumerate}
+    
+\end{frame}
 
 
 \begin{frame}{Linear Pencil, example 1: Marchenko-Pastur}
   \begin{itemize}
     \item From \textbf{step 4} we have defined:
     \begin{equation}
-      g_{11} = \traceLim[d]{ (X^TX - zI_n)^{-1}}
+      g_{11} = \traceLim[d]{ (X^TX - zI_d)^{-1}}
     \end{equation}
     \item From application of \textbf{Main result} we find:
     \begin{equation*}
@@ -384,15 +429,17 @@ with:
 \end{frame}
 
 
-
 \begin{frame}{Linear-pencil, example 2: Sample covariance Matrix}
-  Linear-pencil works for more general matrices: for instance, the sample covariance matrix.
+  \emph{Linear-pencil works for more general matrices: for instance, the sample covariance matrix.}
 
-  Quite often, real-world problems come from samples $u \sim \mathcal N(0, C)$,
-  or $u = C^{\frac12}x$ with $x \sim \mathcal N(0, I_d)$.
+  Quite often, real-world problems come from samples $u \sim \mathcal N(0, C)$.
+  An equivalent model is $u = C^{\frac12}x$ with $x \sim \mathcal N(0, I_d)$.
 
+\begin{block}{Problem}
   Given $n$ samples $U=(u_1, \ldots, u_n)$ an estimation of $C$ is given by:
-  $$ \tilde C = \frac{1}{d} UU^T = C^{\frac12} X X^T C^{\frac12}$$ with $X$ the same random matrix as before.
+  $$ \tilde C = \frac{1}{d} UU^T = C^{\frac12} X X^T C^{\frac12}$$ with $X$ a random matrix.
+  How to characterize the eigenvalue distribution of $\tilde C$ compared to $C$?
+\end{block}
 
   Linear-pencils allow the study of the Stieltjes transform of $\tilde C$:
   $$
@@ -400,7 +447,93 @@ with:
   $$
 \end{frame}
 
+\begin{frame}{Linear-pencil, example 2: Sample covariance Matrix}
+  Let's consider instead:
+  $$ g(z) = \traceLim[d]{(X^T C X - zI_n)^{-1}}$$
+  In a similar way with $h(z) = \traceLim[d]{U_1}$ and the linearization:
+  \begin{equation*}
+    \underbrace{ \begin{pmatrix}
+      -zI_n & 0 & X\\
+      0 & C & I_d \\
+      X^T & I_d & 0
+    \end{pmatrix}}_{L}
+    \begin{pmatrix}
+      U_1 \\
+      U_2 \\
+      U_3
+    \end{pmatrix}
+    = \begin{pmatrix}
+      I_n\\
+      0\\
+      0
+    \end{pmatrix}
+  \end{equation*}
+  and with $\sigma_{13}^{31} = \sigma_{31}^{13} = 1$:
+  \begin{equation*}
+    L_0 = \begin{pmatrix}
+      -zI_n & 0 & 0\\
+      0 & C & I\\
+      0 & I & 0
+    \end{pmatrix}
+    \qquad
+    \text{and}
+    \qquad
+    \eta_L(g) = \begin{pmatrix}
+      g_{33} & 0 & 0\\
+      0 & 0 & 0\\
+      0 & 0 & g_{11}
+    \end{pmatrix}
+  \end{equation*}
+\end{frame}
 
+
+\begin{frame}{Linear-pencil, example 2: Sample covariance Matrix}
+  \begin{equation*}
+    M= (L_0 - (\eta_L \otimes I)(g))^{-1} = 
+    \begin{pmatrix}
+      (-z - g_{33}) I_n & 0 & 0\\
+      0 & C  & I_d\\
+      0 & I_d & -g_{11} I_d
+    \end{pmatrix}^{-1}
+  \end{equation*}
+  Using a block-matrix inversion formula:
+  \begin{equation*}
+    M = 
+    \begin{pmatrix}
+      -(z + g_{33})^{-1} I_n & 0 & 0\\
+      0 & (C+g_{11}^{-1})^{-1} & (g_{11} C + I_d)^{-1}\\
+      0 & (g_{11} C + I_d)^{-1} & -g_{11}^{-1} (I_d - (g_{11} C+ I_d)^{-1})
+   \end{pmatrix}
+  \end{equation*}
+  Thus, formula $g = \traceLimOp[d]{M}$ from \textbf{Main result} yields:
+  \begin{equation*}
+    \begin{cases}
+      g_{11} & = g(z) = - \phi (z+ g_{33})^{-1}\\
+      g_{33} & = - \frac{1}{g_{11}} (1 - \traceLim[d]{ (g_{11} C + I_d)^{-1}})
+      = \frac{1}{g(z)} ( \frac{1}{g(z)} 
+      g_C(-\frac{1}{g(z)}) - 1)
+    \end{cases}
+  \end{equation*}
+  \begin{block}{}
+      $$
+        \phi + z \phi g(z) + \frac{1}{g(z)} 
+        g_C \left(\frac{-1}{g(z)}\right) = 1 
+      $$
+  \end{block}
+\end{frame}
+
+
+\begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
+  Consider a 1-Layer neural network with frozen random weight matrix $W$:
+  \begin{equation*}
+    \hat Y = \sigma(WX) \hat \beta
+  \end{equation*}
+  The ridge-regression estimator gives again:
+  $$ \hat \beta = \sigma(WX)^T (\sigma(WX) \sigma(WX)^T + \lambda I) Y$$
+  As for the toy model of the beginning: we are left to calculate the high-dimensional
+  eigenvalue distribution of $M=\sigma(WX) \sigma(WX)^T$, or similarly its Stieltjes transform:
+  $$g(z) = \traceLim[d]{(\sigma(WX) \sigma(WX)^T - zI_d)^{-1}}$$
+\end{frame}
 
 
 \begin{frame}{Linear-pencil, example 3: Gaussian Equivalence Principle}
@@ -440,6 +573,7 @@ with:
   \end{equation*}
   \textbf{Note:} no unique encoding! In fact, possible with a $4\times 4$ linear-pencil
 \end{frame}
+
 
 
 \begin{frame}{GEP: Construction of $4\times 4$ linear pencil}
@@ -669,65 +803,6 @@ with:
   \end{figure}
 \end{frame}
 
-\section{Beyond the linear setting}
-
-
-
-
-
-\begin{frame}{Quick overview: Extensive case}
-  \begin{itemize}
-    \item \textbf{The data:} $ Y = X^* X^{*T} + \frac{1}{\sqrt \lambda} \xi$ with $\xi_{ij},X_{ij}^*  \sim \mathcal N(0,\frac{1}{n})$ 
-    \item \textbf{The objective:} Minimizing\footnote{See also Rotationally Invariant Estimator \cite{potters2020first}}
-    $\mathcal H(X) = \norm{Y-XX^T}^2_F$ with $X \in \mathbb R^{n \times m}$.
-  \end{itemize}
-
-  Gradient-flow equation $\frac{\dd X_t}{\dd t} = - \phi \nabla \mathcal H(X_t)$ is a matrix Riccati differential equation with solution:
-
-    \begin{equation*}
-      X_t X_t^T = e^{tY} \textcolor{red}{X_0} \left( 
-        I + 2 \textcolor{red}{X_0^T} \int_0^t e^{2sY} \dd s \textcolor{red}{X_0}
-        \right)^{-1} \textcolor{red}{X_0^T} e^{tY}
-    \end{equation*}
-
-    \textbf{Metric:} $\mathcal E(X) = \lim_{d} \frac{1}{d} \mean \norm{X^* X^{*T} - XX^T}_F^2 = \text{cst} - 2 q_t + p_t$ with:
-    \begin{equation*}
-      q_t = \traceLim[d]{(X^*X^{*T}) (X_t X_t^T)}
-      \qquad
-      p_t = \traceLim[d]{(X_t X_t^T)^2}
-    \end{equation*}
-
-\end{frame}
-
-\begin{frame}{Overlap Solution}
-  With $L_t = 2\int_0^t e^{2sY}\dd s$ and linear-pencil method:
-  \begin{equation*}
-    \begin{cases}
-      g_{11} &= \traceLim[d]{ g_{44} \psi X^* e^{tY} ( g_{44} \psi L_t + I_n)^{-1} e^{tY} X^{*T} } \\
-      g_{44} & = (1-g_{66})^{-1} \\
-      g_{66} &= -\traceLim[n]{ L_t (g_{44} \psi L_t + I_n)^{-1}  }
-    \end{cases}
-  \end{equation*}
-  \begin{block}{Main result \cite{bodin10161669}}
-    \begin{equation*}
-        q_t = \int_{\mathbb R} 
-        \frac{z \rho_Q(z) \dd z}{
-            1 - e^{-2tz} + z \textcolor{red}{\tilde q_t} e^{-2tz}
-        }
-    \end{equation*}
-    With $g_Q(z) = \traceLim[d]{X^{*T} (Y-zI)^{-1} X^*}$ and $g_P(z) = \traceLim[d]{(Y-zI)^{-1}}$
-    \begin{equation*}
-        \psi \textcolor{red}{\tilde q_t} = 1 + \int_{\mathbb R}  \frac{
-            (1- e^{-2tz}) \rho_P(z) \dd z
-        }{
-            \frac{1}{\tilde q_t} (1 - e^{-2tz}) + z e^{-2tz}
-        }
-    \end{equation*}
-  \end{block}
-
-\end{frame}
-
-\section{Conclusion}
 
 
 \begin{frame}[standout]
